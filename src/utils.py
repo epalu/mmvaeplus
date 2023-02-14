@@ -239,7 +239,7 @@ class NonLinearLatent_Classifier(nn.Module):
     def __init__(self, in_n):
         super(NonLinearLatent_Classifier, self).__init__()
         self.mlp = nn.Sequential(nn.Linear(in_n, 64), nn.ReLU(inplace=True),
-                                 nn.Linear(64, 10), nn.ReLU(inplace=True))
+                                 nn.Linear(64, 10))
 
     def forward(self, x):
         return self.mlp(x)
