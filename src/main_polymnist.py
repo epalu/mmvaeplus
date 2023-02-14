@@ -173,7 +173,7 @@ def test(epoch, agg):
             loss = -objective(model, data, K=args.K, test=True)
             b_loss += loss.item()
             if i == 0:
-                cg_imgs = model.cross_generate_tb(test_selected_samples)
+                cg_imgs = model.cross_generate(test_selected_samples)
                 for i in range(NUM_VAES):
                     for j in range(NUM_VAES):
                         writer.add_image(tag='Cross_Generation/m{}/m{}'.format(i, j), img_tensor=cg_imgs[i][j],
@@ -356,14 +356,14 @@ def calculate_fid_routine(datadir, fid_path, num_fid_samples, epoch):
     with torch.no_grad():
         # Generate unconditional fid samples
         for tranche in range(num_fid_samples // 100):
-            model.generate_for_fid_tb(fid_path, 100, tranche)
+            model.generate_for_fid(fid_path, 100, tranche)
         # Generate conditional fid samples
         for i, dataT in enumerate(test_loader):
             if i == 1:
                 break
             data, _ = unpack_data_polymnist(dataT, device=device)
             if total_cond < num_fid_samples:
-                model.reconstruct_for_fid_tb(data, fid_path, i)
+                model.reconstruct_for_fid(data, fid_path, i)
                 total_cond += data[0].size(0)
         calculate_inception_features_for_gen_evaluation(args.inception_module_path, device, fid_path, datadir)
         # FID calculation
@@ -448,7 +448,7 @@ if __name__ == '__main__':
                 clf_lr = train_clf_lr(train_loader)
                 save_model_light(model, runPath + '/model_' + str(epoch) + '.rar')
                 save_vars(agg, runPath + '/losses_' + str(epoch) + '.rar')
-                gen_samples = model.generate_tb()
+                gen_samples = model.generate()
                 for j in range(NUM_VAES):
                     writer.add_image(tag='Generation_m{}'.format(j), img_tensor=gen_samples[j],
                                      global_step=epoch)

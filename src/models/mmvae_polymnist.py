@@ -51,7 +51,7 @@ class PolyMNIST_5modalities(MMVAE):
         test = DataLoader(dataset_PolyMNIST_test, batch_size=batch_size, shuffle=shuffle, **kwargs)
         return train, test
 
-    def generate_tb(self):
+    def generate(self):
         N = 100
         outputs = []
         samples_list = super(PolyMNIST_5modalities, self).generate(N)
@@ -73,7 +73,7 @@ class PolyMNIST_5modalities(MMVAE):
             for image in range(samples.size(0)):
                 save_image(samples[image, :, :, :], '{}/random/m{}/{}_{}.png'.format(savedir, i, tranche, image))
 
-    def reconstruct_for_fid_tb(self, data, savedir, i):
+    def reconstruct_for_fid(self, data, savedir, i):
         recons_mat = super(PolyMNIST_5modalities, self).reconstruct_and_cross_reconstruct([d for d in data])
         for r, recons_list in enumerate(recons_mat):
             for o, recon in enumerate(recons_list):
@@ -82,7 +82,7 @@ class PolyMNIST_5modalities(MMVAE):
                     save_image(recon[image, :, :, :],
                                 '{}/m{}/m{}/{}_{}.png'.format(savedir, r,o, image, i))
 
-    def cross_generate_tb(self, data):
+    def cross_generate(self, data):
         N = 10
         recon_triess = [[[] for i in range(N)] for j in range(N)]
         outputss = [[[] for i in range(N)] for j in range(N)]
