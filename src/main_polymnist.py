@@ -449,6 +449,8 @@ if __name__ == '__main__':
                 for key_out in accuracies_lr.keys():
                     for key_in in accuracies_lr[key_out]:
                         writer.add_scalar("Latent_classification_accuracy_linear_{}/{}".format(key_out, key_in), accuracies_lr[key_out][key_in], global_step=epoch)
+                for i_clf_nl in range(NUM_VAES):
+                    classify_latents_nl(i_clf_nl, epoch)
                 calculate_fid_routine(datadir, fid_path, 10000, epoch)
         writer.flush()
         writer.close()
