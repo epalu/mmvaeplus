@@ -145,8 +145,6 @@ def train(epoch, agg):
     model.train()
     b_loss = 0
     for i, dataT in enumerate(train_loader):
-        if i == 1:
-            break
         data, labels_batch = unpack_data_polymnist(dataT, device=device)
         optimizer.zero_grad()
         loss = -objective(model, data, K=args.K, test=False)
@@ -167,8 +165,6 @@ def test(epoch, agg):
         test_selected_samples = get_10_polyMNIST_samples(test_loader.dataset,
                                                      num_testing_images=test_loader.dataset.__len__(), device=device)
         for i, dataT in enumerate(test_loader):
-            if i == 1:
-                break
             data, _ = unpack_data_polymnist(dataT, device=device)
             loss = -objective(model, data, K=args.K, test=True)
             b_loss += loss.item()
@@ -190,8 +186,6 @@ def cross_coherence():
     total = 0
     with torch.no_grad():
         for i, dataT in enumerate(test_loader):
-            if i == 1:
-                break
             data, targets = unpack_data_polymnist(dataT, device)  # needs to be sent to device
             total += targets.size(0)
             _, px_us, _ = model.reconstruct_and_cross_reconstruct_forw(data)
@@ -221,8 +215,6 @@ def unconditional_coherence_and_lr(clf_lr):
                      'w':{}}
     with torch.no_grad():
         for i, dataT in enumerate(test_loader):
-            if i == 1:
-                break
             # Unconditional coherence
             data, targets = unpack_data_polymnist(dataT, device)
             b_size = data[0].size(0)
@@ -304,8 +296,6 @@ def classify_latents_nl(mod, epoch):
     running_loss_w = 0.0
     print('\n====> Epoch: {:03d} '.format(epoch))
     for i, dataT in enumerate(train_loader):
-        if i == 1:
-            break
         data, labels = unpack_data_polymnist(dataT, device=device)
         data_batch = data[mod]
         with torch.no_grad():
@@ -359,8 +349,6 @@ def calculate_fid_routine(datadir, fid_path, num_fid_samples, epoch):
             model.generate_for_fid(fid_path, 100, tranche)
         # Generate conditional fid samples
         for i, dataT in enumerate(test_loader):
-            if i == 1:
-                break
             data, _ = unpack_data_polymnist(dataT, device=device)
             if total_cond < num_fid_samples:
                 model.reconstruct_for_fid(data, fid_path, i)
@@ -405,8 +393,6 @@ def train_clf_lr(dl):
                   'm4': {'u': [], 'z': [], 'w': []}}
     labels_all = []
     for i, dataT_lr in enumerate(dl):
-        if i == 1:
-            break
         data, labels_batch = unpack_data_polymnist(dataT_lr, device=device)
         b_size = data[0].size(0)
         labels_batch = nn.functional.one_hot(labels_batch, num_classes=10).float()
@@ -443,7 +429,7 @@ if __name__ == '__main__':
         agg = defaultdict(list)
         for epoch in range(1, args.epochs + 1):
             train(epoch, agg)
-            if epoch % 1 == 0:
+            if epoch % 25 == 0:
                 test(epoch, agg)
                 clf_lr = train_clf_lr(train_loader)
                 save_model_light(model, runPath + '/model_' + str(epoch) + '.rar')
