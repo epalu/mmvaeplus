@@ -44,7 +44,7 @@ parser.add_argument('--beta', type=float, default=1.0, help='beta hyperparameter
 parser.add_argument('--tmpdir', type=str, default='../data', help='directory in which data need be copied and images will be saved for computation of FID score')
 parser.add_argument('--outputdir', type=str, default='../outputs', help='output directory')
 parser.add_argument('--inception_module_path', type=str, default='../data/pt_inception-2015-12-05-6726825d.pth', help='path to inception module')
-parser.add_argument('--pretrained_clfs_dir', type=str, default='../data/trained_clfs_polyMNIST', help='path to directory containing pre-trained PolyMNIST classifiers')
+parser.add_argument('--pretrained_clfs_dir', type=str, default='../data', help='path to directory containing pre-trained PolyMNIST classifiers')
 
 # args
 args = parser.parse_args()
