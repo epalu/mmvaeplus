@@ -23,32 +23,28 @@ from models.clf_polyMNIST import ClfImg
 from utils import NonLinearLatent_Classifier
 
 parser = argparse.ArgumentParser(description='Multi-Modal VAEs')
-parser.add_argument('--experiment', type=str, default='', metavar='E',
-                    help='experiment name')
-parser.add_argument('--obj', type=str, default='elbo', metavar='O',
+parser.add_argument('--experiment', type=str, default='', help='Experiment name')
+parser.add_argument('--obj', type=str, default='elbo', 
                     choices=[ 'elbo',  'dreg'],
-                    help='objective to use (default: elbo)')
-parser.add_argument('--K', type=int, default=1, metavar='K',
-                    help='number of particles to use for iwae/dreg (default: 10)')
-parser.add_argument('--batch-size', type=int, default=8, metavar='N',
-                    help='batch size for data (default: 256)')
-parser.add_argument('--epochs', type=int, default=150, metavar='E',
-                    help='number of epochs to train (default: 10)')
-parser.add_argument('--latent-dim-w', type=int, default=32)
-parser.add_argument('--latent-dim-z', type=int, default=32)
-parser.add_argument('--print-freq', type=int, default=1, metavar='f',
-                    help='frequency with which to print stats (default: 0)')
-parser.add_argument('--no-cuda', action='store_true', default=False,
-                    help='disable CUDA use')
-parser.add_argument('--seed', type=int, default=1,
-                    help='random seed (default: 1)')
+                    help='objective to use (default: elbo). Alternative DReG estimator in the objective can be used.')
+parser.add_argument('--K', type=int, default=1, 
+                    help='Number of samples for the multi-sample estimator (with DReG objective)')
+parser.add_argument('--batch-size', type=int, default=128,
+                    help='batch size for data. might need to be reduced with DReG objective and large K.')
+parser.add_argument('--epochs', type=int, default=150, 
+                    help='number of epochs')
+parser.add_argument('--latent-dim-w', type=int, default=32, help='number of dimensions for modality-specific latent subspaces')
+parser.add_argument('--latent-dim-z', type=int, default=32,  help='number of dimensions for shared latent subspaces')
+parser.add_argument('--print-freq', type=int, default=0, help='frequency with which to print stats')
+parser.add_argument('--no-cuda', action='store_true', default=False, help='disable CUDA use')
+parser.add_argument('--seed', type=int, default=1, help='random seed')
 parser.add_argument('--variant', type=str, default='mmvaeplus',
-                    choices=['mmvaeplus', 'mmvaefactorized'])
-parser.add_argument('--beta', type=float, default=1.0)
-parser.add_argument('--tmpdir', type=str, default='/data')
-parser.add_argument('--outputdir', type=str, default='./outputs')
-parser.add_argument('--inception_module_path', type=str, default='../data/pt_inception-2015-12-05-6726825d.pth')
-parser.add_argument('--pretrained_clfs_dir', type=str, default='../data/PolyMNIST/trained_clfs_polyMNIST')
+                    choices=['mmvaeplus', 'mmvaefactorized'], help='choose "mmvaeplus" for MMVAE+ (our method) and "mmvaefactorized" for MMVAE_f loss (see comparisons in our paper).' )
+parser.add_argument('--beta', type=float, default=1.0, help='beta hyperparameter')
+parser.add_argument('--tmpdir', type=str, default='../data', help='directory in which data need be copied and images will be saved for computation of FID score')
+parser.add_argument('--outputdir', type=str, default='../outputs', help='output directory')
+parser.add_argument('--inception_module_path', type=str, default='../data/pt_inception-2015-12-05-6726825d.pth', help='path to inception module')
+parser.add_argument('--pretrained_clfs_dir', type=str, default='../data/PolyMNIST/trained_clfs_polyMNIST', help='path to directory containing pre-trained PolyMNIST classifiers')
 
 # args
 args = parser.parse_args()
