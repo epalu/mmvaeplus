@@ -8,7 +8,7 @@ We thank the authors for the code [MMVAE](https://github.com/iffsid/mmvae) from 
 ```
 mkdir data 
 cd data 
-curl -L -o data_ICLR.zip https://polybox.ethz.ch/index.php/s/glcb9vKWEg1AAro/download
+curl -L -o data_ICLR.zip https://polybox.ethz.ch/index.php/s/Eg4RVLC0XxnKAJX/download
 unzip data_ICLR.zip 
 unzip PolyMNIST.zip
 ```
