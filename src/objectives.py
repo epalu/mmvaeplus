@@ -45,7 +45,7 @@ def _m_iwae(model, x, K=1, test=False):
         lws.append(lw)
     return torch.stack(lws)  # (n_modality * n_samples) x batch_size, batch_size
 
-def m_iwae(model, x, K=1, test=False):
+def m_elbo(model, x, K=1, test=False):
     """Computes iwae estimate for log p_\theta(x) for multi-modal vae
     This version is the looser bound---with the average over modalities outside the log
     """

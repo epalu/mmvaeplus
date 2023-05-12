@@ -25,40 +25,27 @@ from utils import NonLinearLatent_Classifier
 parser = argparse.ArgumentParser(description='Multi-Modal VAEs')
 parser.add_argument('--experiment', type=str, default='', metavar='E',
                     help='experiment name')
-parser.add_argument('--model', type=str, default='polymnist_5modalities', metavar='M',
-                    choices=[s[4:] for s in dir(models) if 'VAE_' in s],
-                    help='model name (default: mnist_svhn)')
-parser.add_argument('--obj', type=str, default='dreg', metavar='O',
-                    choices=['elbo_naive', 'elbo', 'iwae', 'dreg'],
+parser.add_argument('--obj', type=str, default='elbo', metavar='O',
+                    choices=[ 'elbo',  'dreg'],
                     help='objective to use (default: elbo)')
-parser.add_argument('--K', type=int, default=2, metavar='K',
+parser.add_argument('--K', type=int, default=1, metavar='K',
                     help='number of particles to use for iwae/dreg (default: 10)')
 parser.add_argument('--batch-size', type=int, default=8, metavar='N',
                     help='batch size for data (default: 256)')
-parser.add_argument('--epochs', type=int, default=1, metavar='E',
+parser.add_argument('--epochs', type=int, default=150, metavar='E',
                     help='number of epochs to train (default: 10)')
-parser.add_argument('--latent-dim-w', type=int, default=10, metavar='L',
-                    help='latent dimensionality (default: 20)')
-parser.add_argument('--latent-dim-z', type=int, default=10, metavar='L',
-                    help='latent dimensionality (default: 20)')
-#parser.add_argument('--pre-trained', type=str, default="",
-#                    help='path to pre-trained model (train from scratch if empty)')
-#parser.add_argument('--learn-prior', action='store_true', default=False,
-#                    help='learn model prior parameters for w')
+parser.add_argument('--latent-dim-w', type=int, default=32)
+parser.add_argument('--latent-dim-z', type=int, default=32)
 parser.add_argument('--print-freq', type=int, default=1, metavar='f',
                     help='frequency with which to print stats (default: 0)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disable CUDA use')
-parser.add_argument('--seed', type=int, default=1, metavar='S',
+parser.add_argument('--seed', type=int, default=1,
                     help='random seed (default: 1)')
-parser.add_argument('--variant', type=str, default='mmvaeplus', metavar='W',
-                    choices=['mmvaeplus', 'mmvaefactorized'],
-                    help='w for recontruction options (default: single)')
-parser.add_argument('--learn-prior-w-polymnist', action='store_true', default=True,
-                    help='learn model prior parameters for w')
-parser.add_argument('--beta', type=float, default=1.0, metavar='S',
-                    help='random seed (default: 1)')
-parser.add_argument('--tmpdir', type=str, default='/Volumes/Samsung USB/O/OLD STUFFF')
+parser.add_argument('--variant', type=str, default='mmvaeplus',
+                    choices=['mmvaeplus', 'mmvaefactorized'])
+parser.add_argument('--beta', type=float, default=1.0)
+parser.add_argument('--tmpdir', type=str, default='/data')
 parser.add_argument('--outputdir', type=str, default='./outputs')
 parser.add_argument('--inception_module_path', type=str, default='../data/pt_inception-2015-12-05-6726825d.pth')
 parser.add_argument('--pretrained_clfs_dir', type=str, default='../data/PolyMNIST/trained_clfs_polyMNIST')
@@ -82,8 +69,12 @@ np.random.seed(args.seed)
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 device = torch.device("cuda" if args.cuda else "cpu")
 
+args.model = "polymnist_5modalities"
 modelC = getattr(models, 'VAE_{}'.format(args.model))
 model = modelC(args).to(device)
+
+if args.obj == 'elbo': 
+    args.K = 1
 
 #if pretrained_path:
 #    print('Loading model {} from {}'.format(model.modelName, pretrained_path))

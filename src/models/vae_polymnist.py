@@ -175,7 +175,7 @@ class PolyMNIST(VAE):
             nn.Parameter(torch.zeros(1, params.latent_dim_w + params.latent_dim_z), requires_grad=False),  # mu
             nn.Parameter(torch.zeros(1, params.latent_dim_w + params.latent_dim_z), requires_grad=False)  # logvar
         ])
-        grad_w = {'requires_grad': params.learn_prior_w_polymnist}
+        grad_w = {'requires_grad': True}
         self._pw_params = nn.ParameterList([
             nn.Parameter(torch.zeros(1, params.latent_dim_w), requires_grad=False),  # mu
             nn.Parameter(torch.zeros(1, params.latent_dim_w), **grad_w)  # logvar
